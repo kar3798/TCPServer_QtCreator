@@ -71,7 +71,7 @@ void TCPServer::onReadyRead()
         QString timeStamp = QDateTime::currentDateTime().toString("hh:mm:ss");
 
         // Format and append client message with timestamp and color
-        ui->chatHistory->append(QString("<font color='blue'>[%1] <b>Client:</b> %2</font>")
+        ui->chatHistory->append(QString("<font color='red'>[%1] <b>Client:</b> %2</font>")
                                     .arg(timeStamp, receivedMessage));
     }
 }
