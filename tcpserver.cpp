@@ -10,14 +10,15 @@ TCPServer::TCPServer(QWidget *parent)
 {
     ui->setupUi(this);
 
-    // Setup the UI
-    ui->label_message->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-    ui->label_message->setWordWrap(true);
+    // Setup the UI for chat history
+    ui->chatHistory->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    ui->chatHistory->setWordWrapMode(QTextOption::WordWrap);
+    ui->chatHistory->setReadOnly(true);
 
     // Manually connect the button click signal to the startServer slot
     connect(ui->startServer, &QPushButton::clicked, this, &TCPServer::startServer);
     connect(ui->sendButton, &QPushButton::clicked, this, &TCPServer::sendMessage);
-
+    connect(ui->lineEdit, &QLineEdit::returnPressed, this, &TCPServer::sendMessage); // Send on Enter key
 
     // Connecting signals for the TCP server
     connect(tcpServer, &QTcpServer::newConnection, this, &TCPServer::onNewConnection);
@@ -65,11 +66,11 @@ void TCPServer::onReadyRead()
         QString receivedMessage = QString::fromUtf8(dataFromClient);
         qDebug() << "Received message:" << receivedMessage;
 
-        // Displaying the message in the UI
-        ui->label_message->setText("Received: " + receivedMessage);
+        // Append client message to chat history
+        ui->chatHistory->append("<b>Client:</b> " + receivedMessage);
 
         // Sending response back to client
-        clientSocket->write("Message received!");
+        // clientSocket->write("Message received!");
     }
 }
 
@@ -88,7 +89,8 @@ void TCPServer::sendMessage()
     QString message = ui->lineEdit->text();
     if (clientSocket && clientSocket->state() == QAbstractSocket::ConnectedState) {
         clientSocket->write(message.toUtf8());
-        ui->label_message->setText(ui->label_message->text() + "\nServer: " + message);
+        // Append server message to chat history
+        ui->chatHistory->append("<b>Server:</b> " + message);
         ui->lineEdit->clear();
     }
 }
