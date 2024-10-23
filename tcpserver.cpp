@@ -8,6 +8,7 @@ TCPServer::TCPServer(QWidget *parent)
     , ui(new Ui::TCPServer)
     , tcpServer(new QTcpServer(this))       // Initializing the TCP server
     , clientSocket(nullptr)
+    , serverRunning(false)                  // Initializing the server as not running
 {
     ui->setupUi(this);
 
@@ -16,7 +17,13 @@ TCPServer::TCPServer(QWidget *parent)
     ui->chatHistory->setWordWrapMode(QTextOption::WordWrap);
     ui->chatHistory->setReadOnly(true);
 
-    // Manually connect the button click signal to the startServer slot
+    ui->label_instruction->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    ui->label_instruction->setText("Type your message below:");
+
+    ui->label_instruction_2->setAlignment(Qt::AlignCenter | Qt::AlignTop);
+    ui->label_instruction_2->setText("Press Enter or click Send");
+
+    // Connecting    the start/stop button to the server control function
     connect(ui->startServer, &QPushButton::clicked, this, &TCPServer::startServer);
     connect(ui->sendButton, &QPushButton::clicked, this, &TCPServer::sendMessage);
     connect(ui->lineEdit, &QLineEdit::returnPressed, this, &TCPServer::sendMessage); // Send on Enter key
@@ -33,12 +40,27 @@ TCPServer::~TCPServer()
 // This function is triggered when the button is clicked
 void TCPServer::startServer()
 {
-    // Start listening for connections on port 1234
-    if(!tcpServer->listen(QHostAddress::Any, 1234)){
-        ui->label->setText("Server failed to start!");
+    if (!serverRunning) {
+        // Start the server
+        if (!tcpServer->listen(QHostAddress::Any, 1234)) {
+            ui->label->setText("Server failed to start!");
+        } else {
+            ui->label->setText("Server started, waiting for connection...");
+            ui->startServer->setText("Stop Server");  // Change button text to "Stop Server"
+            serverRunning = true;
+            qDebug() << "Server started on port 1234";
+        }
     } else {
-        ui->label->setText("Server started, waiting for connection...");
-        qDebug() << "Server started on port 1234";
+        // Stop the server
+        tcpServer->close();  // Stop listening for connections
+        if (clientSocket) {
+            clientSocket->disconnectFromHost();  // Disconnect any active clients
+            clientSocket->close();
+        }
+        ui->label->setText("Server stopped.");
+        ui->startServer->setText("Start Server");  // Change button text to "Start Server"
+        serverRunning = false;
+        qDebug() << "Server stopped";
     }
 }
 

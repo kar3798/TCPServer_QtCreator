@@ -30,6 +30,8 @@ public:
     QPushButton *sendButton;
     QLineEdit *lineEdit;
     QTextEdit *chatHistory;
+    QLabel *label_instruction;
+    QLabel *label_instruction_2;
     QMenuBar *menubar;
 
     void setupUi(QMainWindow *TCPServer)
@@ -44,20 +46,26 @@ public:
         label->setGeometry(QRect(10, 0, 380, 20));
         startServer = new QPushButton(centralwidget);
         startServer->setObjectName("startServer");
-        startServer->setGeometry(QRect(30, 320, 140, 50));
+        startServer->setGeometry(QRect(10, 340, 140, 50));
         sendButton = new QPushButton(centralwidget);
         sendButton->setObjectName("sendButton");
-        sendButton->setGeometry(QRect(230, 320, 140, 50));
+        sendButton->setGeometry(QRect(250, 340, 140, 50));
         lineEdit = new QLineEdit(centralwidget);
         lineEdit->setObjectName("lineEdit");
-        lineEdit->setGeometry(QRect(10, 280, 380, 30));
+        lineEdit->setGeometry(QRect(10, 290, 380, 30));
         chatHistory = new QTextEdit(centralwidget);
         chatHistory->setObjectName("chatHistory");
-        chatHistory->setGeometry(QRect(10, 40, 380, 230));
+        chatHistory->setGeometry(QRect(10, 30, 380, 230));
+        label_instruction = new QLabel(centralwidget);
+        label_instruction->setObjectName("label_instruction");
+        label_instruction->setGeometry(QRect(10, 270, 380, 20));
+        label_instruction_2 = new QLabel(centralwidget);
+        label_instruction_2->setObjectName("label_instruction_2");
+        label_instruction_2->setGeometry(QRect(250, 320, 140, 20));
         TCPServer->setCentralWidget(centralwidget);
         menubar = new QMenuBar(TCPServer);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 400, 21));
+        menubar->setGeometry(QRect(0, 0, 400, 17));
         TCPServer->setMenuBar(menubar);
 
         retranslateUi(TCPServer);
@@ -71,6 +79,8 @@ public:
         label->setText(QString());
         startServer->setText(QCoreApplication::translate("TCPServer", "Start Server", nullptr));
         sendButton->setText(QCoreApplication::translate("TCPServer", "Send", nullptr));
+        label_instruction->setText(QString());
+        label_instruction_2->setText(QString());
     } // retranslateUi
 
 };

@@ -30,5 +30,6 @@ private:
     Ui::TCPServer *ui;
     QTcpServer *tcpServer;
     QTcpSocket *clientSocket;
+    bool serverRunning;                 // Tracks whether the server is currently running
 };
 #endif // TCPSERVER_H
